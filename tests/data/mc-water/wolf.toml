@@ -1,0 +1,25 @@
+[input]
+version = 1
+
+[global]
+cutoff = "6 A"
+tail_correction = true
+
+[pairs]
+O-O = {type = "lj", sigma = "3.16 A", epsilon = "0.155 kcal/mol"}
+H-H = {type = "null"}
+O-H = {type = "null"}
+
+[bonds]
+O-H = {type = "null"}
+
+[angles]
+H-O-H = {type = "null"}
+
+[coulomb]
+wolf = {cutoff = "6 A"}
+restriction = "inter-molecular"
+
+[charges]
+O = -0.82
+H = 0.41

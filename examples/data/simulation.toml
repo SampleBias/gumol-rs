@@ -1,0 +1,18 @@
+[input]
+version = 1
+
+[[systems]]
+potentials = "binary.toml"
+file = "binary.pdb"
+
+[[simulations]]
+nsteps = 100000
+[simulations.propagator]
+type = "MonteCarlo"
+temperature = "500 K"
+moves = [
+    {type = "Rotate", delta = "10.0 deg", molecule = "CO2.pdb"},
+    {type = "Translate", delta = "0.5 A", molecule = "CO2.pdb"},
+    {type = "Rotate", delta = "20 deg", molecule = "H2O.pdb", frequency = 2},
+    {type = "Translate", delta = "10 A", molecule = "H2O.pdb", frequency = 2},
+]

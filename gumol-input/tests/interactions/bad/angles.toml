@@ -1,0 +1,42 @@
+[input]
+version = 1
+
+[angles]
+A = {type = "null"}
+#^ expected three atoms for angle potential, got 1 (["A"])
+
++++
+
+[input]
+version = 1
+
+[angles]
+A-A-A-A = {type = "null"}
+#^ expected three atoms for angle potential, got 4 (["A", "A", "A", "A"])
+
++++
+
+[input]
+version = 1
+
+[angles]
+A-A-A = {}
+#^ missing 'type' key in angle potential
+
++++
+
+[input]
+version = 1
+
+[angles]
+A-A-A = {type = false}
+#^ 'type' key must be a string in angle potential
+
++++
+
+[input]
+version = 1
+
+[angles]
+A-A-A = {type = "bad potential"}
+#^ unknown potential type 'bad potential'

@@ -1,0 +1,20 @@
+[input]
+version = 1
+
+[global]
+cutoff = "8 A"
+
+[pairs]
+O-O = {type = "null"}
+H-H = {type = "null"}
+O-H = {type = "null"}
+
+[bonds]
+O-H = {type = "null"}
+
+[angles]
+H-O-H = {type = "null"}
+
+[charges]
+O = -0.82
+H = 0.41

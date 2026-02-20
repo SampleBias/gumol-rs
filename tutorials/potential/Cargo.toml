@@ -1,0 +1,19 @@
+[package]
+name = "gumol_tutorial_potential"
+version = "0.1.0"
+publish = false
+edition = "2021"
+
+[dependencies]
+gumol = {path = "../../"}
+
+[[bin]]
+name = "gumol_tutorial_potential"
+test = false
+doctest = false
+bench = false
+
+[lib]
+test = false
+doctest = false
+bench = false

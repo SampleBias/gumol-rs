@@ -1,0 +1,51 @@
+[input]
+version = 1
+
+[dihedrals]
+A-A-A-A = {type = "torsion", n = 4, k = "67 kJ/mol"}
+#^ missing 'delta' key in torsion potential
+
++++
+
+[input]
+version = 1
+
+[dihedrals]
+A-A-A-A = {type = "torsion", n = 4, delta = "80 deg"}
+#^ missing 'k' key in torsion potential
+
++++
+
+[input]
+version = 1
+
+[dihedrals]
+A-A-A-A = {type = "torsion", k = "67 kJ/mol", delta = "80 deg"}
+#^ missing 'n' key in torsion potential
+
++++
+
+[input]
+version = 1
+
+[dihedrals]
+A-A-A-A = {type = "torsion", n = 4, k = "67 kJ/mol", delta = 80.0}
+#^ 'delta' must be a string in torsion potential
+
++++
+
+[input]
+version = 1
+
+[dihedrals]
+A-A-A-A = {type = "torsion", n = '4', k = "67 kJ/mol", delta = "80 deg"}
+#^ 'n' must be a positive integer in torsion potential
+
++++
+
+[input]
+version = 1
+
+[dihedrals]
+A-A-A-A = {type = "torsion", n = 4, k = 6, delta = "80 deg"}
+#^ 'k' must be a string in torsion potential

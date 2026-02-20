@@ -1,0 +1,33 @@
+[input]
+version = 1
+
+[pairs]
+A-A = {type = "harmonic", x0 = "3 A"}
+#^ missing 'k' key in harmonic potential
+
++++
+
+[input]
+version = 1
+
+[pairs]
+A-A = {type = "harmonic", k = "22 kJ/mol"}
+#^ missing 'x0' key in harmonic potential
+
++++
+
+[input]
+version = 1
+
+[pairs]
+A-A = {type = "harmonic", k = "22 kJ/mol", x0 = false}
+#^ 'x0' must be a string in harmonic potential
+
++++
+
+[input]
+version = 1
+
+[pairs]
+A-A = {type = "harmonic", k = 2.2, x0 = "7 A"}
+#^ 'k' must be a string in harmonic potential

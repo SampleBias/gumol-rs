@@ -1,0 +1,14 @@
+# TraPPE force field for ethane
+
+[input]
+version = 1
+
+[global]
+cutoff = "8 A"
+tail_correction = true
+
+[pairs]
+C-C = {type = "lj", sigma = "3.4 A", epsilon = "0.7 kcal/mol", restriction = "InterMolecular"}
+
+[bonds]
+C-C = {type = "null"}

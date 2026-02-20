@@ -1,0 +1,23 @@
+[input]
+version = 1
+
+[global]
+cutoff = "10 A"
+
+[pairs]
+C-C = {type = "lj", epsilon = "0.1078 kcal/mol", sigma = "3.8138 A"}
+H-C = {type = "lj", epsilon = ".04735 kcal/mol", sigma = "3.3662 A"}
+H-H = {type = "lj", epsilon = "0.0208 kcal/mol", sigma = "2.9186 A"}
+
+[bonds]
+C-C = {type = "harmonic", k = "232.52 kcal/mol", x0 = "1.538 A"}
+C-H = {type = "harmonic", k = "375.92 kcal/mol", x0 = "1.097 A"}
+
+[angles]
+C-C-C = {type = "harmonic", k = "64.888 kcal/mol", x0 = "111.510 deg"}
+C-C-H = {type = "harmonic", k = "46.816 kcal/mol", x0 = "109.800 deg"}
+H-C-H = {type = "harmonic", k = "38.960 kcal/mol", x0 = "107.580 deg"}
+
+[dihedrals]
+H-C-C-H = {type = "torsion", k = "0.240 kcal/mol", delta = "0.0 deg", n = 3}
+H-C-C-C = {type = "torsion", k = "0.080 kcal/mol", delta = "0.0 deg", n = 3}

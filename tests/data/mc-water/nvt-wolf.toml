@@ -1,0 +1,17 @@
+[input]
+version = 1
+
+[[systems]]
+file = "water.pdb"
+potentials = "wolf.toml"
+
+[[simulations]]
+nsteps = 5_000
+
+[simulations.propagator]
+type = "MonteCarlo"
+temperature = "300 K"
+moves = [
+    {type = "Translate", delta = "1 A", frequency = 1},
+    {type = "Rotate", delta = "120 deg", frequency = 1},
+]

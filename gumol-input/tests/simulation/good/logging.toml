@@ -1,0 +1,17 @@
+[input]
+version = 1
+
+[log]
+targets = [
+    {target = "<stdout>", level = "warning"},
+    {target = "file.log", level = "info"},
+]
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1000000
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"

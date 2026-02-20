@@ -1,0 +1,27 @@
+[package]
+name = "gumol-sim"
+version = "0.1.0"
+authors = ["Luthaf <luthaf@luthaf.fr>"]
+documentation = "https://samplebias.github.io/gumol-rs"
+repository = "https://github.com/SampleBias/gumol-rs"
+readme = "../README.md"
+license = "BSD-3-Clause"
+edition = "2021"
+
+[lib]
+bench = false
+
+[dependencies]
+gumol-core = {path = "../gumol-core"}
+rand = "0.8"
+rand_distr = "0.4"
+rand_xorshift = "0.3"
+log = "0.4"
+log-once = "0.4"
+caldyn = "0.4"
+soa_derive = "0.13"
+num-traits = "0.2"
+
+[dev-dependencies]
+tempfile = "3"
+approx = "0.5"

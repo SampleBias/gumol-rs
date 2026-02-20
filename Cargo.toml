@@ -1,0 +1,65 @@
+[package]
+name = "gumol"
+version = "0.1.0"
+authors = ["Luthaf <luthaf@luthaf.fr>"]
+documentation = "https://samplebias.github.io/gumol-rs"
+repository = "https://github.com/SampleBias/gumol-rs"
+readme = "README.md"
+license = "BSD-3-Clause"
+edition = "2021"
+
+[workspace]
+members = [
+	"gumol-core",
+	"gumol-sim",
+	"gumol-input",
+	"gumol-gpu",
+    "tutorials/potential",
+]
+
+[[bin]]
+name = "gumol"
+doc = false
+test = false
+doctest = false
+bench = false
+
+[lib]
+test = false
+doctest = false
+bench = false
+
+[dependencies]
+gumol-core = {path = "gumol-core"}
+gumol-sim = {path = "gumol-sim"}
+gumol-input = {path = "gumol-input"}
+log = "0.4"
+clap = "4"
+chrono = "0.4"
+backtrace = "0.3"
+
+[dev-dependencies]
+rand = "0.8"
+rand_xorshift = "0.3"
+env_logger = "0.11"
+tempfile = "3"
+
+[dev-dependencies.criterion]
+version = "0.5"
+default-features = false
+
+[[bench]]
+name = "water"
+harness = false
+
+[[bench]]
+name = "nacl"
+harness = false
+
+[[bench]]
+name = "argon"
+harness = false
+
+[[bench]]
+name = "propane"
+harness = false

@@ -1,0 +1,36 @@
+[package]
+name = "gumol-input"
+version = "0.1.0"
+authors = ["Luthaf <luthaf@luthaf.fr>"]
+documentation = "https://samplebias.github.io/gumol-rs"
+repository = "https://github.com/SampleBias/gumol-rs"
+readme = "../README.md"
+license = "BSD-3-Clause"
+edition = "2021"
+
+[lib]
+test = false
+bench = false
+
+[dependencies]
+gumol-core = {path = "../gumol-core"}
+gumol-sim = {path = "../gumol-sim"}
+toml = "0.8"
+log = "0.4"
+anyhow = "1"
+
+[dependencies.log4rs]
+version = "1"
+# log4rs has a enormous ammount of features pulling a lot of crates.
+# Since we don't need most of them, we selectively enable the ones we want.
+default-features = false
+features = ["console_appender", "file_appender", "threshold_filter"]
+
+[dev-dependencies]
+walkdir = "2"
+rustc-test = "0.3"
+env_logger = "0.11"
+
+[[test]]
+name = "input"
+harness = false

@@ -1,0 +1,12 @@
+[package]
+name = "gumol-gpu"
+version = "0.1.0"
+edition = "2021"
+authors = ["Luthaf <luthaf@luthaf.fr>"]
+documentation = "https://samplebias.github.io/gumol-rs"
+
+[dependencies]
+gumol-core = { path = "../gumol-core" }
+cudarc = "0.9"
+bytemuck = { version = "1.13", features = ["extern_crate_alloc"] }
+nvml-wrapper = "0.10"

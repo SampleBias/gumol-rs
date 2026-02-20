@@ -1,0 +1,34 @@
+[input]
+version = 1
+
+[coulomb]
+ewald = {cutoff = "189 A", kmax = 112}
+restriction = "exclude13"
+
+[charges]
+A = -8
+B = 3
+
++++
+
+[input]
+version = 1
+
+[coulomb]
+ewald = {cutoff = "189 A", kmax = 112, alpha = "0.28 A^-1"}
+
+[charges]
+A = -8
+B = 3
+
++++
+
+[input]
+version = 1
+
+[coulomb]
+ewald = {cutoff = "19 A", accuracy = 1e-6}
+
+[charges]
+A = -8
+B = 3

@@ -1,0 +1,28 @@
+[input]
+version = 1
+
+[[systems]]
+cell = 20
+file = "../CO2.xyz"
+guess_bonds = true
+velocities = {init = "300 K"}
+
+# inline potentials
+[systems.potentials.global]
+cutoff = "10 A"
+
+[systems.potentials.pairs]
+C-O = {type = "lj", sigma = "3 A", epsilon = "5 kJ/mol"}
+
+[systems.potentials.bonds]
+C-O = {type = "harmonic", x0 = "3 A", k = "5 kJ/mol"}
+
+[systems.potentials.charges]
+C = 0.8
+O = -0.4
+
+[[simulations]]
+nsteps = 1
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1 fs"

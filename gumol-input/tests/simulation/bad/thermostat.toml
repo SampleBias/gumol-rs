@@ -1,0 +1,252 @@
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = "foo"
+#^ 'thermostat' must be a table in molecular dynamics
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {bla = "foo"}
+#^ missing 'type' key in thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = 7}
+#^ 'type' key must be a string in thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "bad", temperature = "300 K", tolerance = 33}
+#^ unknown thermostat type 'bad'
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "Berendsen", temp = "300 K", timestep = 100}
+#^ missing 'temperature' key in Berendsen thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "Berendsen", temperature = 300, timestep = 100}
+#^ 'temperature' must be a string in Berendsen thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "Berendsen", temperature = "300 K", time = 100}
+#^ missing 'timestep' key in Berendsen thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "Berendsen", temperature = "300 K", timestep = "100"}
+#^ 'timestep' must be a number in Berendsen thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "Rescale"}
+#^ missing 'temperature' key in rescale thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "Rescale", temperature = 300}
+#^ 'temperature' must be a string in rescale thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "Rescale", temperature = "300 K", tolerance = 33}
+#^ 'tolerance' must be a string rescale thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "CSVR"}
+#^ missing 'temperature' key in CSVR thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "CSVR", temperature = 33}
+#^ 'temperature' must be a string in CSVR thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "CSVR", temperature = "33 K"}
+#^ missing 'timestep' key in CSVR thermostat
+
++++
+
+[input]
+version = 1
+
+[[systems]]
+file = "../CO2.xyz"
+
+[[simulations]]
+nsteps = 1
+
+[simulations.propagator]
+type = "MolecularDynamics"
+timestep = "1.0 fs"
+thermostat = {type = "CSVR", temperature = "33 K", timestep = "33"}
+#^ 'timestep' must be a number in CSVR thermostat

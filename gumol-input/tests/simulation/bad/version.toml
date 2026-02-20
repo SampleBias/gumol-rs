@@ -1,0 +1,9 @@
+[input]
+#^ missing 'version' key in 'input' table
+bla = 4
+
++++
+
+[input]
+#^ can only read version 1 of input, got version 42
+version = 42
