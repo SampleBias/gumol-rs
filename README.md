@@ -1,109 +1,166 @@
-# Lumol molecular simulation engine
+# Gumol - GPU-Accelerated Radiation Simulation Engine
 
-[![Build Status](https://travis-ci.org/lumol-org/lumol.svg?branch=master)](https://travis-ci.org/lumol-org/lumol)
-[![Coverage](https://codecov.io/gh/lumol-org/lumol/branch/master/graph/badge.svg)](https://codecov.io/gh/lumol-org/lumol)
-[![Documentation](https://img.shields.io/badge/documentation-latest-brightgreen.svg)](https://lumol-org.github.io/lumol/latest/index.html)
-[![Gitter](https://badges.gitter.im/lumol-org/lumol.svg)](https://gitter.im/lumol-org/lumol)
+Gumol is a GPU-accelerated molecular simulation engine designed for studying
+the effects of ionizing radiation on biological systems, with particular focus
+on Extracellular Superoxide Dismutase (EC-SOD) protection in space radiation
+environments.
 
-Lumol is a classical molecular simulation engine that provides a solid base for
-developing new algorithms and methods. Using Lumol, you can customize the
-behavior of all the algorithms in a simulation. Adding a new force field,
-customizing Monte Carlo moves or molecular dynamics integrators is easy and well
-documented.
+**Based on**: [Lumol](https://github.com/lumol-org/lumol) (BSD-3-Clause license)
 
-Lumol goals are to be flexible, reliable and extensible. For us, this means that
-this software should be:
+## Overview
 
-- **flexible**: the code can simulate all kind of systems, from proteins to
-  crystals, using various methods: molecular dynamics, Monte Carlo, *etc.*
-- **reliable**: the code is well tested, both at the function level; and at the
-  simulation level, checking thermodynamic properties of the systems;
-- **extendable**: the code is modular, object-oriented, well documented,
-  open-source, and easy to read.
+Gumol extends the flexible molecular simulation framework of Lumol with specialized
+GPU acceleration and radiation-specific algorithms. The engine is designed to:
 
-Lumol is actively developed, and should be considered as alpha software. If
-you are interested, have some questions or want to participate, you can open a
-[Github issue][issues] or go to the project [chat room][Gitter].
+- Simulate radiation damage to DNA, proteins, and cell membranes
+- Model EC-SOD protective mechanisms in space environments
+- Provide high-performance computation through adaptive CPU/GPU acceleration
+- Support radiation physics at the molecular level
 
-## Features
+## Key Features
 
-- Pair, molecular and electrostatic interactions (with Ewald or Wolf methods);
-- Energy minimization;
-- Molecular dynamics simulations in the NVE, NVT and NPT ensembles;
-- Monte Carlo simulations in the NVT ensemble;
-- and many others! Have a look at the [documentation](#documentation) for more
-  information
+- **Hybrid CPU/GPU Acceleration**: Automatic selection between CPU and GPU compute paths based on system size and characteristics
+- **CUDA Support**: Optimized kernels for NVIDIA GPUs (Turing architecture and newer)
+- **Radiation Physics**: Specialized algorithms for modeling ionizing radiation damage
+- **Cell-Linked Lists**: O(N) neighbor list construction for efficient force calculations
+- **EC-SOD Library**: Coarse-grained models for superoxide dismutase simulation
+- **Flexible Simulation**: Molecular dynamics (NVE, NVT, NPT), Monte Carlo, energy minimization
 
-## Getting started
+## Hardware Requirements
 
-Lumol provides both a command line tool for running simulations; and a Rust
-library for writing your own simulations algorithms using the pre-existing
-building blocks.
+- **GPU**: NVIDIA RTX 3050 Ti or later (Compute capability 7.5+ recommended)
+- **CUDA**: Toolkit 11.0 or higher
+- **CPU**: Multi-core processor for parallel CPU computation
+- **Memory**: 8GB+ RAM recommended for large simulations
 
-### Documentation
+## Architecture
 
-Documentation is hosted [here](http://lumol-org.github.io/lumol), and separated
-in multiple parts:
+The Gumol engine uses an adaptive computation strategy:
 
-- The [user manual][user_manual] contains information about the general
-  concepts of systems and simulations used in Lumol. Additionally, it has
-  tutorials on how to use and extend Lumol. Use this documentation if you want
-  to know basic concepts and how they are used in Lumol.
-- The [input reference][input_reference] contains information about - well,
-  the input file system of Lumol.
-  Use this document if you want to use Lumol as a command line tool
-  without writing code.
-- To use Lumol as a library inside your own code, we have a [developer
-  documentation][devdoc], which contains documentation for all the library
-  public functions, and examples for most of them.
+- **GPU Path**: Homogeneous systems with >500 atoms, non-bonded force calculations, Lennard-Jones potentials
+- **CPU Path**: Bonded interactions (bonds, angles, dihedrals), electrostatics (Ewald), small systems, integrators
 
-### Installation as a command line tool
+### Key Components
 
-You will need a stable Rust compiler, [grab one][Rust] if you do not have one
-yet. Then, you can download the code, build it and install it by running:
+- `gumol-core`: Core data structures, potentials, and force computations
+- `gumol-sim`: Molecular dynamics, Monte Carlo, and minimization algorithms
+- `gumol-input`: TOML-based input system for simulations
+- `gumol-gpu`: CUDA kernels and GPU memory management
+
+## Installation
+
+### Prerequisites
 
 ```bash
-cargo install --git https://github.com/lumol-org/lumol
+# Install CUDA toolkit 11.0+ (Linux)
+sudo apt install nvidia-cuda-toolkit
+
+# Verify installation
+nvidia-smi
+nvcc --version
 ```
 
-This will produce the a `lumol` binary in `~/.cargo/bin`.
+### From Source
 
-### Usage as a library
+```bash
+# Clone the repository
+git clone https://github.com/SampleBias/gumol-rs.git
+cd gumol-rs
 
-You can add Lumol as a dependency in your project's `Cargo.toml`:
+# Build
+cargo build --release
+
+# The binary will be at target/release/gumol
+```
+
+### As a Library
+
+Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-lumol = {git = "https://github.com/lumol-org/lumol"}
+gumol = { git = "https://github.com/SampleBias/gumol-rs" }
 ```
 
-A tutorial about how to implement new algorithms in Lumol is coming. While
-waiting, you can ask your questions [here][Gitter].
+## Quick Start
+
+### Command Line
+
+```bash
+# Run a simulation
+gumol simulation.toml
+
+# Run with GPU acceleration (if available)
+gumol --gpu simulation.toml
+```
+
+### As a Library
+
+```rust
+use gumol_core::*;
+use gumol_sim::*;
+use gumol_input::*;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Load system from file
+    let system = System::from_file("water.pdb")?;
+
+    // Set up simulation
+    let mut simulation = MolecularDynamics::new(
+        VelocityVerlet::new(1.0), // timestep in fs
+        BerendsenThermostat::new(300.0, 100.0) // temperature and coupling
+    );
+
+    // Run simulation
+    simulation.run(&mut system, 10000)?;
+    Ok(())
+}
+```
+
+## Project Status
+
+**Current Phase**: Initial refactoring (Version 0.1.0)
+
+Roadmap:
+- [x] Project setup and package renaming
+- [ ] Neighbor list system (cell-linked list)
+- [ ] GPU kernel infrastructure
+- [ ] Radiation damage models
+- [ ] EC-SOD coarse-grained library
+- [ ] Performance optimization and benchmarking
 
 ## Contributing
 
-If you want to contribute to Lumol, there are several ways to go: improving the
-documentation and helping with language issues; testing the code on your systems
-to find bugs; adding new algorithms and potentials; providing feature requests.
-Please come by and [talk with us][Gitter] a bit before staring new work, or open
-an [issue][issues] to discuss improvements. We also have
-[recommendations][contributing] for contributors.
+Gumol is in active development. Contributions are welcome! Areas of interest:
 
-See the [AUTHORS](AUTHORS) file for a list of contributors to the code.
+- GPU kernel optimization
+- Radiation physics algorithms
+- EC-SOD model development
+- Testing and validation
+- Documentation
+
+Please open an issue to discuss major changes before starting work.
+
+## Documentation
+
+Full documentation is available at: https://samplebias.github.io/gumol-rs
+
+- User manual: Concepts, tutorials, and examples
+- Input reference: TOML configuration guide
+- API documentation: Library function reference
 
 ## License
 
-This software is licensed under the BSD license, see the LICENSE file for legal
-text.
+This software is licensed under the BSD-3-Clause license (retained from Lumol).
+See the [LICENSE](LICENSE) file for details.
 
-Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in the work by you, shall be licensed under the same BSD license,
-without any additional terms or conditions.
+## Acknowledgments
 
-[Rust]: https://www.rust-lang.org/downloads.html
-[Gitter]: https://gitter.im/lumol-org/lumol
-[issues]: https://github.com/lumol-org/lumol/issues/new
-[contributing]: Contributing.md
-[user_manual]: http://lumol-org.github.io/lumol/latest/book/
-[input_reference]: http://lumol-org.github.io/lumol/latest/book/
-[devdoc]: http://lumol-org.github.io/lumol/latest/lumol/
+Gumol is a fork of [Lumol](https://github.com/lumol-org/lumol), maintained by
+the Lumol development team. We thank them for the solid foundation they've
+provided.
+
+## Contact
+
+- **Issues**: https://github.com/SampleBias/gumol-rs/issues
+- **Discussions**: https://github.com/SampleBias/gumol-rs/discussions
