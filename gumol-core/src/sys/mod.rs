@@ -19,6 +19,9 @@ pub use self::energy::EnergyEvaluator;
 mod cache;
 pub use self::cache::EnergyCache;
 
+mod neighbor;
+pub use self::neighbor::NeighborList;
+
 mod chfl;
 pub use chemfiles::Error as TrajectoryError;
 pub use self::chfl::{OpenMode, Trajectory, TrajectoryBuilder};

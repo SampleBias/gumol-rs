@@ -8,11 +8,11 @@ use chrono::offset::Local;
 use clap::{Command, Arg, ArgMatches};
 use log::{info, error};
 
-use lumol::input::Input;
+use gumol::input::Input;
 
 fn parse_args() -> ArgMatches {
-    Command::new("lumol").version(lumol::VERSION)
-                     .about("An extensible molecular simulation engine")
+    Command::new("gumol").version(gumol::VERSION)
+                     .about("GPU-accelerated molecular simulation engine for radiation damage studies")
                      .arg(
                         Arg::new("input.toml")
                             .required(true)
@@ -25,7 +25,7 @@ fn main() {
     std::panic::set_hook(Box::new(|info| {
         // Just in case no logger was created yet (very early panic), let's
         // create one!
-        lumol_input::setup_default_logger();
+        gumol_input::setup_default_logger();
 
         let playload = info.payload();
         let message = if let Some(message) = playload.downcast_ref::<&str>() {
@@ -57,7 +57,7 @@ fn main() {
         }
     };
 
-    info!("Running lumol version {}", lumol::VERSION);
+    info!("Running gumol version {}", gumol::VERSION);
 
     let start = Local::now();
     info!(

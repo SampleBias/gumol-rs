@@ -9,6 +9,6 @@ fn main() {
         version.push_str(git);
     }
 
-    println!("cargo:rustc-env=LUMOL_FULL_GIT_VERSION={}", version);
+    println!("cargo:rustc-env=GUMOL_FULL_GIT_VERSION={}", version);
     println!("cargo:rerun-if-changed=.git/HEAD");
 }
