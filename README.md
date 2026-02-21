@@ -28,7 +28,9 @@ GPU acceleration and radiation-specific algorithms. The engine is designed to:
 
 ## Hardware Requirements
 
-- **GPU**: NVIDIA RTX 3050 Ti or later (Compute capability 7.5+ recommended)
+- **GPU**: NVIDIA GPU with CUDA support (GTX 1050 / Pascal 6.1 or newer)
+  - GTX 1050: Supported, optimized profile available
+  - RTX 3050 Ti / Turing: Recommended for larger systems
 - **CUDA**: Toolkit 11.0 or higher
 - **CPU**: Multi-core processor for parallel CPU computation
 - **Memory**: 8GB+ RAM recommended for large simulations
@@ -67,10 +69,37 @@ nvcc --version
 git clone https://github.com/SampleBias/gumol-rs.git
 cd gumol-rs
 
-# Build
+# Build (CPU only)
 cargo build --release
 
+# Build with GPU support (requires CUDA toolkit)
+cargo build --release --features gpu
+
 # The binary will be at target/release/gumol
+```
+
+### GPU Profile Configuration
+
+For different NVIDIA GPUs, use the appropriate profile:
+
+```rust
+use gumol_gpu::{GpuAccelerator, GpuProfile, GpuForceProvider};
+
+// GTX 1050 (Pascal) - default for older GPUs
+let profile = GpuProfile::gtx_1050();
+
+// RTX 3050 Ti (Turing) - when you upgrade
+let profile = GpuProfile::rtx_3050_ti();
+
+// Custom profile for your GPU
+let profile = GpuProfile::custom("My GPU")
+    .compute_capability(61)  // Pascal
+    .block_size(128)
+    .min_atoms_for_gpu(1000)
+    .build();
+
+let accelerator = GpuAccelerator::with_profile(profile)?;
+system.set_force_provider(std::sync::Arc::new(GpuForceProvider::new(accelerator)));
 ```
 
 ### As a Library

@@ -29,10 +29,15 @@ test = false
 doctest = false
 bench = false
 
+[features]
+default = []
+gpu = ["gumol-gpu"]
+
 [dependencies]
 gumol-core = {path = "gumol-core"}
 gumol-sim = {path = "gumol-sim"}
 gumol-input = {path = "gumol-input"}
+gumol-gpu = {path = "gumol-gpu", optional = true}
 log = "0.4"
 clap = "4"
 chrono = "0.4"

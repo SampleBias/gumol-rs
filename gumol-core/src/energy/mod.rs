@@ -160,6 +160,12 @@ pub trait PairPotential: Potential + BoxClonePair {
     /// If this integral does not converge for the current potential, this
     /// function should then return 0.0 to disable tail corrections.
     fn tail_virial(&self, cutoff: f64) -> f64;
+
+    /// Get Lennard-Jones parameters (sigma, epsilon) if this potential is LJ.
+    /// Returns `None` for non-LJ potentials. Used for GPU acceleration.
+    fn lj_params(&self) -> Option<(f64, f64)> {
+        None
+    }
 }
 impl_box_clone!(PairPotential, BoxClonePair, box_clone_pair);
 

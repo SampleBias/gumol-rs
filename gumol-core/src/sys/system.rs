@@ -10,7 +10,7 @@ use log_once::warn_once;
 use crate::{Matrix3, Vector3D};
 use crate::{AnglePotential, BondPotential, DihedralPotential, PairInteraction};
 use crate::{CoulombicPotential, GlobalPotential};
-use crate::{Composition, EnergyEvaluator, Interactions};
+use crate::{Composition, EnergyEvaluator, ForceProvider, Interactions};
 use crate::{Configuration, Molecule, UnitCell};
 
 /// The number of degrees of freedom simulated in a given system
@@ -50,6 +50,8 @@ pub struct System {
     pub simulated_degrees_of_freedom: DegreesOfFreedom,
     /// The current simulation step
     pub step: u64,
+    /// Optional force provider (e.g. GPU accelerator). When set, forces() uses it.
+    force_provider: Option<std::sync::Arc<dyn ForceProvider>>,
 }
 
 impl System {
@@ -68,12 +70,24 @@ impl System {
     /// Create a system with the specified `configuration`, and no interactions.
     fn with_configuration(configuration: Configuration) -> System {
         System {
-            configuration: configuration,
+            configuration,
             interactions: Interactions::new(),
             step: 0,
             external_temperature: None,
             simulated_degrees_of_freedom: DegreesOfFreedom::Particles,
+            force_provider: None,
         }
+    }
+
+    /// Set the force provider for GPU or other acceleration.
+    /// When set, [`System::forces`] will use this provider.
+    pub fn set_force_provider(&mut self, provider: std::sync::Arc<dyn ForceProvider>) {
+        self.force_provider = Some(provider);
+    }
+
+    /// Clear the force provider, reverting to default CPU computation.
+    pub fn clear_force_provider(&mut self) {
+        self.force_provider = None;
     }
 
     /// Add a molecule to the system
@@ -182,7 +196,7 @@ impl System {
     }
 
     /// Get read-only access to the interactions for this system
-    pub(crate) fn interactions(&self) -> &Interactions {
+    pub fn interactions(&self) -> &Interactions {
         &self.interactions
     }
 
@@ -314,7 +328,11 @@ impl System {
 
     /// Get the forces acting on all the particles in the system
     pub fn forces(&self) -> Vec<Vector3D> {
-        Forces.compute(self)
+        if let Some(ref provider) = self.force_provider {
+            provider.forces(self)
+        } else {
+            Forces.compute(self)
+        }
     }
 }
 

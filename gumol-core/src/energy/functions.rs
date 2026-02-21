@@ -89,6 +89,10 @@ impl Potential for LennardJones {
 }
 
 impl PairPotential for LennardJones {
+    fn lj_params(&self) -> Option<(f64, f64)> {
+        Some((self.sigma, self.epsilon))
+    }
+
     fn tail_energy(&self, cutoff: f64) -> f64 {
         let s3 = self.sigma * self.sigma * self.sigma;
         let rc3 = cutoff * cutoff * cutoff;

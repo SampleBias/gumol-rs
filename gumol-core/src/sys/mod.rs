@@ -6,6 +6,9 @@
 mod config;
 pub use self::config::*;
 
+mod force_provider;
+pub use self::force_provider::ForceProvider;
+
 mod system;
 pub use self::system::System;
 pub use self::system::DegreesOfFreedom;

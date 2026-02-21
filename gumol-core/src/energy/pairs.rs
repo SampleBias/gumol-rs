@@ -164,6 +164,12 @@ impl PairInteraction {
     pub fn cutoff(&self) -> f64 {
         self.cutoff
     }
+
+    /// Get Lennard-Jones parameters if this interaction uses LJ potential.
+    /// Returns `None` for non-LJ potentials. Used for GPU acceleration.
+    pub fn lj_params(&self) -> Option<(f64, f64)> {
+        self.potential.lj_params()
+    }
 }
 
 impl PairInteraction {
