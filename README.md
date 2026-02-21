@@ -1,4 +1,4 @@
-# Gumol - GPU-Accelerated Radiation Simulation Engine
+cd gum# Gumol - GPU-Accelerated Radiation Simulation Engine
 
 Gumol is a GPU-accelerated molecular simulation engine designed for studying
 the effects of ionizing radiation on biological systems, with particular focus

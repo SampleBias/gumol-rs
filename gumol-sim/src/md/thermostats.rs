@@ -112,6 +112,10 @@ impl BerendsenThermostat {
 impl Thermostat for BerendsenThermostat {
     fn apply(&mut self, system: &mut System) {
         let instant_temperature = system.temperature();
+        // Avoid SIGFPE (division by zero) when instant_temperature is near zero
+        if instant_temperature < 1e-10 {
+            return;
+        }
         let factor = f64::sqrt(1.0 + (self.temperature / instant_temperature - 1.0) / self.tau);
         for velocity in system.particles_mut().velocity {
             *velocity *= factor;
@@ -195,6 +199,10 @@ impl CSVRThermostat {
 impl Thermostat for CSVRThermostat {
     fn apply(&mut self, system: &mut System) {
         let kinetic = system.kinetic_energy();
+        // Avoid SIGFPE (division by zero) when kinetic energy is near zero
+        if kinetic < 1e-10 {
+            return;
+        }
         let kinetic_factor = self.target_kinetic_per_dof / kinetic;
         let exp_1 = f64::exp(-1.0/self.tau);
         let exp_2 = (1.0 - exp_1) * kinetic_factor;

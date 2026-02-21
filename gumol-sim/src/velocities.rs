@@ -8,6 +8,7 @@ use rand_distr::{Normal, Uniform, Distribution};
 
 use gumol_core::consts::K_BOLTZMANN;
 use gumol_core::{System, Vector3D};
+use log::warn;
 
 use crate::md::{Control, RemoveRotation, RemoveTranslation};
 
@@ -15,6 +16,14 @@ use crate::md::{Control, RemoveRotation, RemoveTranslation};
 /// is `temperature`.
 pub fn scale(system: &mut System, temperature: f64) {
     let instant_temperature = system.temperature();
+    // Avoid SIGFPE (division by zero) if instant_temperature is near zero
+    if instant_temperature < 1e-10 {
+        warn!(
+            "Instant temperature is near zero ({}), skipping velocity scaling",
+            instant_temperature
+        );
+        return;
+    }
     let factor = f64::sqrt(temperature / instant_temperature);
     for velocity in system.particles_mut().velocity {
         *velocity *= factor;

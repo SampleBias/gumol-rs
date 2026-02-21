@@ -30,6 +30,11 @@ impl Control for RemoveTranslation {
     fn control(&mut self, system: &mut System) {
         let total_mass = system.particles().mass.iter().sum();
 
+        // Avoid SIGFPE (division by zero) for zero total mass
+        if total_mass < 1e-10 {
+            return;
+        }
+
         let mut com_velocity = Vector3D::zero();
         for (&mass, velocity) in soa_zip!(system.particles(), [mass, velocity]) {
             com_velocity += velocity * mass / total_mass;
@@ -65,6 +70,13 @@ impl Control for RemoveRotation {
 
         // The angular velocity omega is defined by `L = I w` with L the angular
         // momentum, and I the inertia matrix.
+        // Avoid SIGFPE: check if inertia matrix is invertible before calling inverse()
+        let determinant = inertia.determinant();
+        if determinant.abs() < 1e-30 {
+            // Matrix is not invertible (e.g., all particles at same position)
+            // Skip rotation removal in this case
+            return;
+        }
         let angular = inertia.inverse() * moment;
         for (position, velocity) in soa_zip!(system.particles_mut(), [position, mut velocity]) {
             *velocity -= (position - com) ^ angular;

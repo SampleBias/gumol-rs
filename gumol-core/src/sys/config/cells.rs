@@ -285,9 +285,19 @@ impl UnitCell {
         match self.shape {
             CellShape::Infinite => (),
             CellShape::Orthorhombic => {
-                vect[0] -= f64::round(vect[0] / self.a()) * self.a();
-                vect[1] -= f64::round(vect[1] / self.b()) * self.b();
-                vect[2] -= f64::round(vect[2] / self.c()) * self.c();
+                // Avoid SIGFPE (division by zero) for zero or near-zero cell dimensions
+                let a = self.a();
+                let b = self.b();
+                let c = self.c();
+                if a > 1e-10 {
+                    vect[0] -= f64::round(vect[0] / a) * a;
+                }
+                if b > 1e-10 {
+                    vect[1] -= f64::round(vect[1] / b) * b;
+                }
+                if c > 1e-10 {
+                    vect[2] -= f64::round(vect[2] / c) * c;
+                }
             }
             CellShape::Triclinic => {
                 let mut fractional = self.fractional(vect);

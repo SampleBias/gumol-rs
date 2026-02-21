@@ -53,7 +53,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             // Use GTX 1050 profile - change to GpuProfile::rtx_3050_ti() for newer GPUs
             let profile = GpuProfile::gtx_1050();
             let accelerator = GpuAccelerator::with_profile(profile)?;
-            println!("GPU: {} ({})", accelerator.device_info(), profile.name);
+            println!("GPU: {} ({})", accelerator.device_info(), accelerator.profile().name);
             system.set_force_provider(std::sync::Arc::new(GpuForceProvider::new(accelerator)));
         } else {
             println!("GPU not available, using CPU");

@@ -10,7 +10,7 @@ pub use dispatcher::{check_gpu_compatibility, GpuCompatibility};
 pub use memory::GpuSystemState;
 pub use profile::{GpuProfile, GpuProfileBuilder};
 
-use gumol_core::sys::compute::Forces;
+use gumol_core::sys::compute::{Compute, Forces};
 
 /// Error type for GPU operations
 #[derive(Debug)]

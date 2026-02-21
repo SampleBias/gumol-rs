@@ -126,7 +126,12 @@ impl Vector3D {
     /// ```
     #[inline]
     pub fn normalized(&self) -> Vector3D {
-        self / self.norm()
+        let norm = self.norm();
+        // Avoid SIGFPE (division by zero) for near-zero vectors
+        if norm < 1e-10 {
+            return Vector3D::zero();
+        }
+        self / norm
     }
 
     /// Tensorial product between vectors. The tensorial product between the

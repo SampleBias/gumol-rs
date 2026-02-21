@@ -57,7 +57,12 @@ impl Integrator for VelocityVerlet {
         for (&mass, acceleration, force) in soa_zip!(
             system.particles(), [mass], &mut self.accelerations, forces
         ) {
-            *acceleration = force / mass;
+            // Avoid SIGFPE (division by zero) for zero mass particles
+            if mass > 0.0 {
+                *acceleration = force / mass;
+            } else {
+                *acceleration = Vector3D::zero();
+            }
         }
 
         // Update velocities at t + ∆t
@@ -113,7 +118,12 @@ impl Integrator for Verlet {
             // Save positions at t
             let tmp = *position;
             // Update positions at t + ∆t
-            *position = 2.0 * (*position) - (*prevpos) + dt2 / mass * force;
+            // Avoid SIGFPE (division by zero) for zero mass particles
+            if *mass > 0.0 {
+                *position = 2.0 * (*position) - (*prevpos) + dt2 / *mass * force;
+            } else {
+                *position = 2.0 * (*position) - (*prevpos);
+            }
             // Update velocities at t
             *velocity = ((*position) - (*prevpos)) / (2.0 * dt);
             // Update saved position
@@ -161,9 +171,14 @@ impl Integrator for LeapFrog {
         for (velocity, &mass, acceleration, force) in soa_zip!(
             system.particles_mut(), [mut velocity, mass], &mut self.accelerations, &forces
         ) {
-            let new_acceleration = force / mass;
-            *velocity += 0.5 * ((*acceleration) + new_acceleration) * dt;
-            *acceleration = new_acceleration;
+            // Avoid SIGFPE (division by zero) for zero mass particles
+            if mass > 0.0 {
+                let new_acceleration = force / mass;
+                *velocity += 0.5 * ((*acceleration) + new_acceleration) * dt;
+                *acceleration = new_acceleration;
+            } else {
+                *velocity += 0.5 * (*acceleration) * dt;
+            }
         }
     }
 }

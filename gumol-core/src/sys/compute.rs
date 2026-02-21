@@ -167,6 +167,10 @@ impl Compute for Temperature {
     fn compute(&self, system: &System) -> f64 {
         let kinetic = KineticEnergy.compute(system);
         let dof = system.degrees_of_freedom() as f64;
+        // Avoid SIGFPE (division by zero) when dof is zero
+        if dof < 1.0 {
+            return 0.0;
+        }
         return 2.0 * kinetic / (dof * K_BOLTZMANN);
     }
 }
@@ -300,7 +304,12 @@ impl Compute for MolecularVirial {
                             let info = potential.restriction().information(path);
                             if !info.excluded {
                                 let w_ab = info.scaling * potential.virial(&r_ab);
-                                local_virial += w_ab * (r_ab * r_ij) / r_ab.norm2();
+                                let norm2 = r_ab.norm2();
+                                // Avoid SIGFPE (division by zero) for overlapping particles
+                                if norm2 < 1e-20 {
+                                    continue;
+                                }
+                                local_virial += w_ab * (r_ab * r_ij) / norm2;
                             }
                         }
                      }
@@ -402,6 +411,10 @@ impl Compute for PressureAtTemperature {
         assert!(self.temperature >= 0.0);
         let virial = system.virial().trace();
         let volume = system.volume();
+        // Avoid SIGFPE (division by zero) for zero or negative volume
+        if volume <= 0.0 {
+            return 0.0;
+        }
         let dof = system.degrees_of_freedom() as f64;
         return (dof * K_BOLTZMANN * self.temperature + virial) / (3.0 * volume);
     }
@@ -448,6 +461,10 @@ impl Compute for StressAtTemperature {
         assert!(!system.cell.is_infinite(), "Can not compute stress for infinite cell");
         let virial = system.virial();
         let volume = system.volume();
+        // Avoid SIGFPE (division by zero) for zero or negative volume
+        if volume <= 0.0 {
+            return Matrix3::zero();
+        }
         let dof = system.degrees_of_freedom() as f64;
         let kinetic = dof / 3.0 * K_BOLTZMANN * self.temperature * Matrix3::one();
         return (kinetic + virial) / volume;

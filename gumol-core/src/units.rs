@@ -280,7 +280,14 @@ impl UnitExpr {
         match *self {
             UnitExpr::Val(v) => v,
             UnitExpr::Mul(ref lhs, ref rhs) => lhs.eval() * rhs.eval(),
-            UnitExpr::Div(ref lhs, ref rhs) => lhs.eval() / rhs.eval(),
+            UnitExpr::Div(ref lhs, ref rhs) => {
+                let denom = rhs.eval();
+                // Avoid SIGFPE (division by zero)
+                if denom.abs() < 1e-20 {
+                    return if lhs.eval() >= 0.0 { f64::MAX } else { f64::MIN };
+                }
+                lhs.eval() / denom
+            }
             UnitExpr::Pow(ref expr, pow) => expr.eval().powi(pow),
         }
     }

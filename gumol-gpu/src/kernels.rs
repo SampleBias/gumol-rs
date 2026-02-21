@@ -5,7 +5,7 @@
 //!
 //! Lennard-Jones force kernel with periodic boundary conditions.
 
-use cudarc::driver::{CudaDevice, CudaFunction, CudaSlice, DriverError, LaunchConfig};
+use cudarc::driver::{CudaDevice, CudaFunction, CudaSlice, LaunchAsync, LaunchConfig};
 use cudarc::nvrtc::{compile_ptx_with_opts, CompileOptions, Ptx};
 use std::sync::Arc;
 
@@ -41,20 +41,22 @@ extern "C" __global__ void lj_forces(
         double dz = zi - positions[3*j+2];
 
         // Minimum image convention (orthorhombic)
-        if (cell_a > 0.0) {
-            dx -= rint(dx / cell_a) * cell_a;
+        // Use floor(x+0.5) instead of rint to avoid potential SIGFPE on some systems
+        if (cell_a > 1e-10) {
+            dx -= floor(dx / cell_a + 0.5) * cell_a;
         }
-        if (cell_b > 0.0) {
-            dy -= rint(dy / cell_b) * cell_b;
+        if (cell_b > 1e-10) {
+            dy -= floor(dy / cell_b + 0.5) * cell_b;
         }
-        if (cell_c > 0.0) {
-            dz -= rint(dz / cell_c) * cell_c;
+        if (cell_c > 1e-10) {
+            dz -= floor(dz / cell_c + 0.5) * cell_c;
         }
 
         double r2 = dx*dx + dy*dy + dz*dz;
         if (r2 >= cutoff*cutoff || r2 < 1e-20) continue;
 
         double r = sqrt(r2);
+        if (r < 1e-10) continue;  /* Avoid division by zero for overlapping particles */
         double inv_r = 1.0 / r;
         double s_over_r = sigma * inv_r;
         double s6 = s_over_r * s_over_r * s_over_r * s_over_r * s_over_r * s_over_r;
@@ -91,7 +93,9 @@ fn load_lj_kernel(device: &Arc<CudaDevice>, profile: &GpuProfile) -> Result<(), 
         return Ok(());
     }
     let ptx = compile_lj_kernel(profile)?;
-    device.load_ptx(ptx, "gumol_lj", &["lj_forces"])?;
+    device
+        .load_ptx(ptx, "gumol_lj", &["lj_forces"])
+        .map_err(|e| GpuError::Driver(e.to_string()))?;
     Ok(())
 }
 
