@@ -2,7 +2,7 @@
 use gumol_core::{Particle, Molecule, System, UnitCell, Vector3D};
 use gumol_core::energy::{LennardJones, PairInteraction};
 use gumol_core::units;
-use gumol_sim::output::{EnergyOutput, TrajectoryOutput};
+use gumol_sim::output::{EnergyOutput, SimpleXYZOutput};
 use gumol_sim::{MolecularDynamics, Simulation};
 use gumol_sim::{BoltzmannVelocities, InitVelocities};
 
@@ -37,7 +37,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let md = MolecularDynamics::new(units::from(1.0, "fs")?);
     let mut simulation = Simulation::new(Box::new(md));
 
-    let trajectory_out = Box::new(TrajectoryOutput::new("trajectory_cpu.xyz")?);
+    let trajectory_out = Box::new(SimpleXYZOutput::new("trajectory_cpu.xyz")?);
     simulation.add_output_with_frequency(trajectory_out, 100);
 
     let energy_out = Box::new(EnergyOutput::new("energy_cpu.dat")?);

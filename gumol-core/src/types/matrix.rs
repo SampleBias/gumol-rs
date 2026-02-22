@@ -211,7 +211,10 @@ impl Matrix3 {
     /// equals zero.
     pub fn inverse(&self) -> Matrix3 {
         let determinant = self.determinant();
-        assert!(determinant.abs() > 1e-30, "The matrix is not invertible!");
+        // Check for invertibility before attempting division to avoid SIGFPE
+        if determinant.abs() <= 1e-30 {
+            panic!("The matrix is not invertible! Determinant is {}", determinant);
+        }
         let inverse_determinant = 1.0 / determinant;
         let mut res = Matrix3::zero();
         res[0][0] = (self[1][1] * self[2][2] - self[2][1] * self[1][2]) * inverse_determinant;

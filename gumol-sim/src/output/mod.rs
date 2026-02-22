@@ -51,3 +51,6 @@ pub use self::properties::PropertiesOutput;
 
 mod trajectory;
 pub use self::trajectory::TrajectoryOutput;
+
+mod simple_xyz;
+pub use self::simple_xyz::SimpleXYZOutput;

@@ -150,8 +150,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 **Current Phase**: Initial refactoring (Version 0.1.0)
 
+**Recent Bug Fixes**: The codebase has been comprehensively fixed for SIGFPE (Floating Point Exception) errors caused by division-by-zero edge cases. See [docs/SIGFPE_FIX.md](docs/SIGFPE_FIX.md) for complete details.
+
 Roadmap:
 - [x] Project setup and package renaming
+- [x] SIGFPE division-by-zero protection implementation
 - [ ] Neighbor list system (cell-linked list)
 - [ ] GPU kernel infrastructure
 - [ ] Radiation damage models

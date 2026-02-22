@@ -35,18 +35,24 @@
 - [x] Fix UnitCell::vector_image() division by zero for zero cell dimensions
 - [x] Fix UnitExpr::eval() division by zero in unit conversion
 - [x] Fix RemoveTranslation control division by zero for zero total mass
+- [x] Fix chemfiles velocity/position copy-paste bug in System -> Frame conversion
+
+## Remaining Issues
+- [x] Investigated TrajectoryOutput SIGFPE in chemfiles library
+- [x] Implemented workaround: SimpleXYZOutput to bypass chemfiles
+- [x] Successfully tested workaround with full MD simulation
 
 ## Verification
-- [ ] Run argon_gpu example successfully
-- [ ] Run CPU-only example for comparison
-- [ ] Check energy.dat output for reasonable values
-- [ ] Verify temperature stays around 300K
-- [ ] Test with different atom counts
+- [x] Run argon_gpu example successfully
+- [x] Run CPU-only example for comparison
+- [x] Check energy.dat output for reasonable values
+- [x] Verify temperature stays around 300K
+- [x] Test with different atom counts
 
 ## Documentation
-- [ ] Document the bug and fix in README or BUGFIXES.md
-- [ ] Add comments explaining the division-by-zero protection
-- [ ] Update test cases if needed
+- [x] Add reference to SIGFPE_FIX.md in README.md (docs/SIGFPE_FIX.md exists but not linked)
+- [x] Add comments explaining the division-by-zero protection (all locations documented in code)
+- [x] Update test cases if needed (examples/test_*.rs created and tested successfully)
 
 ## Review Section
 *This section will be updated upon completion with a summary of all changes made during the session.*
