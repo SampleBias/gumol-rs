@@ -1,3 +1,12 @@
 target
 Cargo.lock
 *.pyc
+
+# Simulation output files (trajectories, energy, etc.)
+trajectory.xyz
+trajectory.pdb
+energy.dat
+energy_*.dat
+*_energy.dat
+*_prp.dat
+forces.xyz
